@@ -24,23 +24,48 @@ def Matrix_Multiplication(matrix1, matrix2):
     return result
 
 def isRowEchelon(matrix):
-    leading_one_col = -1  # Tracks the column index of the first 1 in each row
+    leading_one_col = -1 
     for row in matrix:
-        # Find the first non-zero element in the row
+        
         for col_index, value in enumerate(row):
             if value != 0:
-                # If this is the first non-zero element, check that it follows the leading one rule
+
                 if col_index <= leading_one_col:
-                    return False  # Leading 1 in this row must be to the right of the previous row's leading 1
+                    return False  
                 leading_one_col = col_index
-                break  # Stop checking after the first non-zero element
+                break 
         else:
-            # If the row is all zeros, ensure it's after rows with non-zero elements
-            if leading_one_col == -1:  # No leading one yet, which is an issue if it's not the first row
+  
+            if leading_one_col == -1:  
                 return False
 
     return True
 
+def Gaussian_Elimination(matrix):
+    columns=len(matrix[0])
+    rows = len(matrix)
+    
+    for r in range(rows):
+
+        pivot_row = r
+        for i in range(r+1,rows):
+            if abs(matrix[i][r] > abs(matrix[pivot_row][r])):
+                pivot_row = i
+            
+        if pivot_row != r:
+            matrix[r], matrix[pivot_row]= matrix[pivot_row],matrix[r]
+        
+        pivot = matrix[r][r]
+        if(pivot !=0):
+            matrix[r]= [x/pivot for x in matrix[r]]
+
+        for i in range(r+1,rows):
+            
+            if matrix[i][r] != 0:  
+                factor = matrix[i][r]
+                matrix[i] = [matrix[i][j] - factor * matrix[r][j] for j in range(columns)]
+
+    return matrix
 
 matrix = [[1,2,3], [4,5,6]]
 matrix1 = [[7,8], [9, 10],[11,12]]
@@ -48,13 +73,13 @@ matrix3 = [
     [0, 0, 0],
     [1, 0, 0],
     [0, 1, 0]
-]  # False (Zero row not at the bottom)
+]  
 
 matrix4 = [
-  [1, 0, 0],
-    [0, 0, 1],
-    [0, 1, 0]
+  [2, 3, -1, 8],
+    [-1, 2, 1, 3],
+    [3, 1, 2, 7]
 ]
 
-print(isRowEchelon(matrix3))  # Output: False
-print(isRowEchelon(matrix4))
+result = Gaussian_Elimination(matrix4)
+print(isRowEchelon(result)) 
