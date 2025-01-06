@@ -78,8 +78,10 @@ matrix3 = [
 matrix4 = [
   [2, 3, -1, 8],
     [-1, 2, 1, 3],
-    [3, 1, 2, 7]
+    [3, 1, 2, 7],
+    [3, 5, -3, 4],
+
 ]
 
 result = Gaussian_Elimination(matrix4)
-print(isRowEchelon(result)) 
+print(result) 
