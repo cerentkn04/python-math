@@ -25,12 +25,19 @@ def LinReg( X_train, y_train):
     sumXY = np.sum(X_train * y_train)
   
     
-    b=(n * sumXY -sumX * sumY)/(n * sumX2 - sumX**2)
+    b=(n * sumXY - sumX * sumY)/(n * sumX2 - sumX**2)
     a=(sumY -b*sumX)/n
     sol= a+ b*X_train
 
     return a,b,sol
 
+def var(array):
+    return np.sum((x-np.mean(array))**2 for x in array)/len(array)
+
+def Rsquare(predicted,actual):
+    ss_total =np.sum((predicted- np.mean(actual))**2)
+    ss_residual = np.sum((actual- predicted)**2)
+    return 1-(ss_residual/ss_total)
 
 a,b,sol= LinReg(X_train, y_train)
 plt.plot(X_train, sol, color="red", label=f"Regression Line: y = {a:.2f} + {b:.2f}x")
