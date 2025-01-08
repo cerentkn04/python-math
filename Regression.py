@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -6,8 +5,6 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
 advertising = pd.read_csv( "advertising.csv" )
-
-
 
 x= advertising['TV']
 y= advertising['Sales']
