@@ -13,46 +13,50 @@ sns.pairplot(advertising, x_vars='TV', y_vars='Sales', height=4, kind='scatter')
 
 X_train, X_test, y_train, y_test = train_test_split( x, y, train_size = 0.7, test_size = 0.3, random_state = 100 )
 
-sol=0
+
 def LinReg( X_train, y_train):
 
     X_train = np.array( X_train)
     y_train = np.array(y_train)
-    n= len(X_train)
+
+   
+    a,b = gradientD(X_train,y_train,LL=1e-5)
+    print("a=",a,"b=",b)
+    sol= a+b*X_train
+    print("sol",sol)
     
-    b=1
-    a=0
-    sol= a+ b*X_train
-    print("-----------------------------------sol",sol)
-    ssr(a,b,X_train,y_train)
-    intercept,slope ,sol = gradientD(X_train,y_train,0.1,)
-
- 
-
-    return intercept,slope,sol
-
+    sol_original = a + b * ((X_train - np.mean(X_train)) / np.std(X_train))
+    return sol
 def var(array):
     return np.sum((x-np.mean(array))**2 for x in array)/len(array)
 
-def gradientD(x,actual,LL,max_iters=10, tolerance=1e-6):
+def gradientD(x,actual,LL,max_iters=1000000, tolerance=0.0001):
     intercept=0
-    slope = 0.0
-    a, b = symbols('a b')
-    ssr = sum((actual - (a + b * x))**2 for actual, x in zip(actual, x))
-    difa = diff(ssr,a)
-    difb = diff(ssr,b)
+    slope = 0
+
     for _ in range(max_iters):
-        grad_a=difa.subs({a:intercept,b:slope})
-        grad_b=difb.subs({a:intercept,b:slope})
-        intercept -= LL * grad_a
-        slope -= LL * grad_b
-        ssr =sum((actual - ( intercept+ slope * x))**2 for actual, x in zip(actual, x))
-        
+        difa,difb = numerical_derivative(intercept,slope,x,actual)
+        stepb= LL*difb 
+        stepa=LL*difa
+        intercept -=stepa
+        slope-=stepb
+        print("-----------------------------------stepa",difa,"stepb",difb)
+        if abs(difa) < tolerance or abs(difb) < tolerance:
+            break
+
+    return intercept, slope
+
+
+def numerical_derivative(a,b,x,actual):
+    prediction = a + b * x
+    error = actual - prediction
+
+    derivative_a = -2 * np.sum(error)/len(actual)
+    derivative_b = -2 * np.sum(error * x)/len(actual)
     
-    return intercept, slope, ssr
+    return derivative_a, derivative_b
 
-
-     
+   
 
 def Rsquare(predicted,actual):
     print(predicted)
@@ -62,13 +66,8 @@ def Rsquare(predicted,actual):
 
 def ssr(a,b,x,actual):
     return np.sum((actual-(a+b*x))**2)
-intercept, slope, sol = LinReg(X_train, y_train)
 
-# Evaluating intercept and slope to numeric values (use .evalf())
-intercept_value = intercept.evalf()
-slope_value = slope.evalf()
-
-# Plotting the regression line
-plt.plot(X_train, sol, color="red", label=f"Regression Line: y = {intercept_value:.2f} + {slope_value:.2f}x")
+sol= LinReg(X_train, y_train)
+plt.plot(X_train, sol, color="red", )
 plt.legend()
 plt.show()
