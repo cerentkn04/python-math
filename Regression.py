@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from sympy import *
 import matplotlib.pyplot as plt 
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.model_selection import train_test_split
@@ -99,12 +98,12 @@ def ssr(a,b,x,actual):
 #plt.show()
 bias, (coef_hours, coef_scores) = MultiLinReg(Xs, Y)
 
-# Create meshgrid for regression plane
+
 hours_range = np.linspace(Xs['Hours Studied'].min(), Xs['Hours Studied'].max(), 50)
 scores_range = np.linspace(Xs['Previous Scores'].min(), Xs['Previous Scores'].max(), 50)
 x_surf, y_surf = np.meshgrid(hours_range, scores_range)
 
-# Predict Performance Index using the regression plane
+
 z_surf = bias + coef_hours * x_surf + coef_scores * y_surf
 
 # Plotting the data points and regression plane

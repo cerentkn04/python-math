@@ -7,7 +7,6 @@ def euclideanDistance(matrix):
     return total**0.5
 
 def ManhattanDistance(matrix):
-    
     return np.einsum('i->',np.abs(matrix[0] - matrix[1]))
 def MinkowskiDistance(matrix,p):
   

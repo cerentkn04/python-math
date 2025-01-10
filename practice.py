@@ -46,7 +46,6 @@ def Gaussian_Elimination(matrix):
     rows = len(matrix)
     
     for r in range(rows):
-
         pivot_row = r
         for i in range(r+1,rows):
             if abs(matrix[i][r] > abs(matrix[pivot_row][r])):
@@ -80,7 +79,6 @@ matrix4 = [
     [-1, 2, 1, 3],
     [3, 1, 2, 7],
     [3, 5, -3, 4],
-
 ]
 
 result = Gaussian_Elimination(matrix4)
