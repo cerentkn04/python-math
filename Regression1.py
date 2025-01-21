@@ -12,7 +12,7 @@ sns.pairplot(data, x_vars='Temperature (°C)', y_vars='Ice Cream Sales (units)',
 def PolReg(x,y):
     x_vals=np.array(x)
     y_vals=np.array(y)
-    n_samp =np.shape(x_vals)
+    n_samp = len(x_vals)
     solution=[]
 
     Xf=[]
@@ -25,24 +25,25 @@ def PolReg(x,y):
     w = np.zeros(3)
     bias=0 
     solution = np.dot(Xf,w) + bias
-   
 
-    w= Gradient(Xf,w,solution,y_vals)
+    w,bias= Gradient(Xf,w,bias,solution,y_vals)
+    
    
-    yp = np.dot(Xf,w) + bias
-
+    yp = np.dot(Xf,w)+bias
+    print("bias",bias)
     return yp
 
-def Gradient(xf,w,predicted,actual,lr=1e-5,max_iters=1000):
+def Gradient(xf,w,bias,predicted,actual,lr=0.00001,max_iters=1000):
     Xf = np.array(xf)
     Xf_t = Xf.T
     delta = predicted - actual
     for _ in range(max_iters):
         dw = (-1 / len(xf)) * np.dot(Xf_t, delta)
         w += lr * dw 
+        db = (-1 / len(xf)) * np.sum(delta)
+        bias += lr * db
     
-    return w
-
+    return w, bias
 def solcompute(Xf,W):
     yp=[]
     for i in range(len(Xf)):
