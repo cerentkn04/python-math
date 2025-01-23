@@ -10,7 +10,7 @@ y = np.where(y == 'Iris-setosa', 0, 1)
 X = data.iloc[0:99, [0, 2]].values
 
 class AdalineGD:
-    def __init__(self,Eta=0.01,N_iters=50,random_state=1):
+    def __init__(self,Eta,N_iters,random_state=1):
         self.eta =Eta
         self.n_iters = N_iters
         self.random_state = random_state
@@ -42,14 +42,23 @@ class AdalineGD:
     
 
 fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 4))
-ada1 = AdalineGD(N_iters=15, Eta=0.1).fit(X, y)
+ada1 = AdalineGD(N_iters=20, Eta=0.5).fit(X, y)
 ax[0].plot(range(1, len(ada1.losses) + 1),np.log10(ada1.losses), marker='o')
 ax[0].set_xlabel('Epochs')
 ax[0].set_ylabel('log(Mean squared error)')
 ax[0].set_title('Adaline - Learning rate 0.1')
-ada2 = AdalineGD(N_iters=15, Eta=0.0001).fit(X, y)
-ax[1].plot(range(1, len(ada2.losses) + 1),ada2.losses, marker='o')
-ax[1].set_xlabel('Epochs')
-ax[1].set_ylabel('Mean squared error')
-ax[1].set_title('Adaline - Learning rate 0.0001')
+
 plt.show()
+
+x_std= np.copy(X)
+x_std[:,0] = (X[:,0] - X[:,0].mean()) / X[:,0].std()
+x_std[:,1] = (X[:,1] - X[:,1].mean()) / X[:,1].std()
+ada_std = AdalineGD(N_iters=20, Eta=0.5).fit(X, y)
+ada_std.fit(x_std, y)
+
+plt.plot(range(1, len(ada_std.losses) + 1),ada_std.losses, marker='o')
+plt.xlabel('Epochs')
+plt.ylabel('Mean squared error')
+plt.tight_layout()
+plt.show()
+
