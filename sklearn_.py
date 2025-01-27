@@ -2,7 +2,7 @@ from sklearn import datasets
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import Perceptron
+from sklearn.linear_model import Perceptron,LogisticRegression
 from matplotlib.colors import ListedColormap
 import matplotlib.pyplot as plt
 iris = datasets.load_iris()
@@ -58,7 +58,11 @@ def plot_decision_regions(X, y, classifier, test_idx=None,resolution=0.02):
 
 X_combined_std = np.vstack((X_train_std, X_test_std))
 y_combined = np.hstack((y_train, y_test))
-plot_decision_regions(X=X_combined_std, y=y_combined,classifier=ppn,test_idx=range(105, 150))
+X_train_01_subset = X_train_std[(y_train == 0) | (y_train == 1)]
+y_train_01_subset = y_train[(y_train == 0) | (y_train == 1)]
+lr= LogisticRegression(C=100.0,solver='lbfgs',multi_class='ovr')
+lr.fit(X_train_std,y_train)
+plot_decision_regions(X_combined_std, y_combined,classifier=lr,test_idx=range(105,150))
 plt.xlabel('Petal length [standardized]')
 plt.ylabel('Petal width [standardized]')
 plt.legend(loc='upper left')
