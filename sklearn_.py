@@ -90,3 +90,5 @@ if __name__ == "__main__":
     plt.legend(loc='upper left')
     plt.tight_layout()
     plt.show()
+
+  
