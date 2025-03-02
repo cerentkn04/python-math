@@ -3,7 +3,7 @@ from PIL import Image
 import cv2 as cv
 
 
-image = Image.open("sample3.jpg")
+image = Image.open("sample.jpg")
 image = image.resize((500, 500))
 ddepth = cv.CV_16S
 
@@ -53,6 +53,7 @@ R_Theta = cv.filter2D(normalizedimg, ddepth, kernel=gk_theta)
 
 
 cv.imshow("current Image", R_Theta)
+
 
 
 
