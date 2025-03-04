@@ -3,12 +3,11 @@ from PIL import Image
 import cv2 as cv
 
 
-image = Image.open("sample.jpg")
+image = Image.open("sample2.jpg")
 image = image.resize((500, 500))
 ddepth = cv.CV_16S
 
 image = np.array(image)
-
 image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
 
 
@@ -31,7 +30,10 @@ theta = np.radians(theta_deg)
 
 x_index, y_index = np.meshgrid(np.arange(-m, m+1), np.arange(-m, m+1))
 
-
+integral_image = cv.integral(image)
+integral_image = integral_image.astype(np.float32)
+integral_image /= integral_image.max()
+cv.imshow("Integral Image", integral_image) 
 
 G = lambda x, y: np.exp(-(x**2 + y**2))
 G0 = lambda x, y: -2*x*G(x,y)
@@ -48,11 +50,13 @@ blur = cv.filter2D(image, -1, kernel)
 LaplacePic = cv.Laplacian(image_gray, ddepth, 3)
 abs_dst = cv.convertScaleAbs(LaplacePic)
 
+
 R_Theta = cv.filter2D(normalizedimg, ddepth, kernel=gk_theta)
 
 
 
 cv.imshow("current Image", R_Theta)
+
 
 
 
