@@ -15,7 +15,7 @@ kp2, des2 = sift.detectAndCompute(scene_img, None)
 
 FLANN_INDEX_KDTREE = 1
 index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
-search_params = dict(checks=1000)
+search_params = dict(checks=750)
 
 
 flann = cv.FlannBasedMatcher(index_params, search_params)
@@ -25,6 +25,24 @@ good_matches = []
 for m, n in matches:
     if m.distance < 0.7 * n.distance:
         good_matches.append(m)
+
+
+if len(good_matches) >= 1000:
+        # Extract matched keypoints in the scene
+        scene_pts = np.float32([kp2[m.trainIdx].pt for m in good_matches])
+
+        # Calculate bounding box around the matched keypoints
+        x, y, w, h = cv.boundingRect(scene_pts)
+
+        # Draw bounding box around the detected object in the scene
+        scene_img = cv.rectangle(scene_img, (x, y), (x + w, y + h), (0, 255, 0), 3)
+
+        status = "Object Found"
+else:
+    status = "Object Not Found"
+
+
+     
 
 num_keypoints = len(good_matches)
 result = {
