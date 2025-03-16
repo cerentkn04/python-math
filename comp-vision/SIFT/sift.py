@@ -2,8 +2,8 @@ import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 
-object_img = cv.imread('photo3.jpeg')
-scene_img= cv.imread('photo4.jpeg')
+object_img = cv.imread('muftry.jpeg')
+scene_img= cv.imread('muftry1.jpeg')
 
 
 sift = cv.SIFT_create()

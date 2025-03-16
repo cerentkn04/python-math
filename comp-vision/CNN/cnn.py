@@ -1,15 +1,16 @@
 import torch
 import torch.nn as nn
 from torchvision import transforms
-import torchvision
 import torch.optim as optim
-import pandas as pd
 import os
 import cv2
 from torch.utils.data import Dataset, DataLoader
 import torch.nn.functional as F
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
-# Dataset Class
+
+
 class Fer2013Dataset(Dataset):
     def __init__(self, path, transform=None):
         self.data = []
@@ -23,10 +24,10 @@ class Fer2013Dataset(Dataset):
 
             for image_name in os.listdir(folder_path):
                 image_path = os.path.join(folder_path, image_name)
-                img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)  # Grayscale images
+                img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)  
 
                 if img is not None:
-                    img = cv2.resize(img, (48, 48))  # Resize all images to 48x48
+                    img = cv2.resize(img, (48, 48))  
                     self.data.append(img)
                     self.labels.append(class_index)
 
@@ -43,14 +44,16 @@ class Fer2013Dataset(Dataset):
         return image, label
 
 
-# Transformations
 transform = transforms.Compose([
     transforms.ToPILImage(),
     transforms.ToTensor(),
     transforms.Normalize((0.5,), (0.5,))
 ])
 
-# Load Dataset
+
+
+
+
 batch_size = 32
 train_dataset = Fer2013Dataset('./arch/train', transform=transform)
 test_dataset = Fer2013Dataset('./arch/test', transform=transform)
@@ -58,7 +61,7 @@ test_dataset = Fer2013Dataset('./arch/test', transform=transform)
 trainloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 testloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
-# Model
+
 class Fer2013(nn.Module):
     def __init__(self):
         super().__init__()
@@ -98,7 +101,7 @@ class Fer2013(nn.Module):
         x = self.fc2(x)
         return x
 
-# Model Training
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = Fer2013().to(device)
 
@@ -117,14 +120,29 @@ for epoch in range(n_epochs):
         optimizer.step()
 
     model.eval()
+    all_preds = []
+    all_labels = []
     acc = 0
     count = 0
     with torch.no_grad():
         for inputs, labels in testloader:
             inputs, labels = inputs.to(device), labels.to(device)
             y_pred = model(inputs)
+            predictions = torch.argmax(y_pred, dim=1)
+            all_preds.extend(predictions.cpu().numpy())
+            all_labels.extend(labels.cpu().numpy())
             acc += (torch.argmax(y_pred, 1) == labels).float().sum()
             count += len(labels)
 
     acc /= count
     print(f"Epoch {epoch + 1}: Model Accuracy {acc * 100:.2f}%")
+
+
+cm = confusion_matrix(all_labels, all_preds)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=train_dataset.classes)
+
+
+plt.figure(figsize=(8, 8))
+disp.plot(cmap='Blues', values_format='d')
+plt.title("Confusion Matrix")
+plt.show()

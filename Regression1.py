@@ -24,8 +24,7 @@ def PolReg(x,y):
     
     w = np.zeros(3)
     bias=0 
-    solution = np.dot(Xf,w) + bias
-
+    solution = np.dot(Xf,w) + bias  
     w,bias= Gradient(Xf,w,bias,solution,y_vals)
     
    
@@ -56,8 +55,6 @@ print(solution)
 
 
 
-
-# Plotting the results
 plt.scatter(x, y, color="blue", label="Data points")  # Scatter plot of the data
 plt.plot(x, solution, color="red", label="Polynomial Regression Line")  # Regression line
 plt.xlabel("Temperature (°C)")
